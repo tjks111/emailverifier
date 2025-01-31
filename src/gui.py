@@ -13,7 +13,7 @@ class EmailValidatorApp(QtWidgets.QWidget):
         self.verifying_timer.timeout.connect(self.update_verifying_text)
 
     def init_ui(self):
-        self.setWindowTitle("D2kHub - Email Validator")
+        self.setWindowTitle("KnowEmail - Email Validator")
         self.setMinimumSize(600, 500)
 
         # Main layout
@@ -23,7 +23,7 @@ class EmailValidatorApp(QtWidgets.QWidget):
 
         # Header Section
         header_layout = QtWidgets.QVBoxLayout()
-        title = QtWidgets.QLabel("Free Email Verifier")
+        title = QtWidgets.QLabel("KnowEmail")
         title.setObjectName("title")
         
         subtitle = QtWidgets.QLabel("Ad-Free & Open Source")
@@ -34,7 +34,7 @@ class EmailValidatorApp(QtWidgets.QWidget):
         main_layout.addLayout(header_layout)
 
         description = QtWidgets.QLabel(
-            "Tired of dealing with invalid email addresses? Free Email Verifier tool helps you "
+            "Tired of dealing with invalid email addresses? KnowEmail helps you "
             "clean your email lists by ensuring every address is valid before you send that "
             "important campaign."
         )

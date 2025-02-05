@@ -1,8 +1,16 @@
+/* Base widget styling */
 QWidget {
     background-color: #ffffff;
     font-family: 'Segoe UI', Arial, sans-serif;
+    color: #2c3e50;
 }
 
+/* Explicit text color for all text elements */
+QLabel, QLineEdit, QPushButton, QMessageBox {
+    color: #2c3e50;
+}
+
+/* Title styling */
 #title {
     font-size: 28px;
     font-weight: bold;
@@ -10,12 +18,14 @@ QWidget {
     margin-bottom: 5px;
 }
 
+/* Subtitle styling */
 #subtitle {
     font-size: 16px;
     color: #7f8c8d;
     margin-bottom: 20px;
 }
 
+/* Description text styling */
 #description {
     font-size: 14px;
     color: #34495e;
@@ -23,18 +33,29 @@ QWidget {
     margin-bottom: 30px;
 }
 
+/* Email input field styling */
 #emailInput {
     padding: 12px;
     border: 2px solid #bdc3c7;
     border-radius: 6px;
     font-size: 14px;
     min-width: 300px;
+    color: #2c3e50;
+    background-color: #f8f9fa;
 }
 
 #emailInput:focus {
     border-color: #3498db;
+    background-color: #ffffff;
 }
 
+/* Force text color for all QLineEdit widgets */
+QLineEdit {
+    color: #2c3e50;
+    background-color: #f8f9fa;
+}
+
+/* Check button styling */
 #checkButton {
     background-color: #3498db;
     color: white;
@@ -50,6 +71,7 @@ QWidget {
     background-color: #2980b9;
 }
 
+/* Result label styling */
 #resultLabel {
     color: #e74c3c;
     font-size: 14px;
@@ -57,6 +79,7 @@ QWidget {
     text-align: center;
 }
 
+/* Support section styling */
 #supportLabel {
     color: #7f8c8d;
     font-size: 13px;
@@ -64,6 +87,7 @@ QWidget {
     text-align: center;
 }
 
+/* Donate button styling */
 #donateButton {
     background-color: #27ae60;
     color: white;
@@ -85,13 +109,13 @@ QMessageBox {
 }
 
 QMessageBox QLabel {
-    color: #2c3e50;
+    color: #2c3e50 !important;
     font-size: 14px;
 }
 
 QMessageBox QPushButton {
     background-color: #3498db;
-    color: white;
+    color: white !important;
     padding: 8px 20px;
     border: none;
     border-radius: 4px;
@@ -108,5 +132,10 @@ QMessageBox QPushButton:focus {
 }
 
 QMessageBox QLabel#qt_msgboxex_icon_label {
-    display: none; /* Hide the default icon */
+    display: none;
+}
+
+/* Force text color for all push buttons */
+QPushButton {
+    color: white;
 }

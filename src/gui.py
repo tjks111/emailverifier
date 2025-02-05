@@ -1,7 +1,69 @@
 import os
-from PyQt5 import QtWidgets, QtCore
-from lib.validators import is_valid_email_syntax, has_mx_record, verify_email_smtp
 import webbrowser
+from PyQt5 import QtWidgets, QtCore, QtGui
+from lib.validators import is_valid_email_syntax, has_mx_record, verify_email_smtp
+import pandas as pd
+
+class ResultDialog(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("KnowEmail - Verifying Bulk Emails")
+        self.setMinimumSize(600, 400)
+        
+        self.layout = QtWidgets.QVBoxLayout()
+        self.table = QtWidgets.QTableWidget()
+        self.table.setColumnCount(2)
+        self.table.setHorizontalHeaderLabels(["Email", "Status"])
+        self.table.horizontalHeader().setStretchLastSection(True)
+        
+        self.layout.addWidget(self.table)
+        self.setLayout(self.layout)
+
+    def add_row(self, email, status):
+        row_position = self.table.rowCount()
+        self.table.insertRow(row_position)
+        
+        email_item = QtWidgets.QTableWidgetItem(email)
+        status_item = QtWidgets.QTableWidgetItem(status)
+        
+        if status == "Valid":
+            status_item.setForeground(QtGui.QColor('#27ae60'))  # Green
+        elif status.startswith("Invalid"):
+            status_item.setForeground(QtGui.QColor('#e74c3c'))  # Red
+        else:
+            status_item.setForeground(QtGui.QColor('#f1c40f'))  # Yellow
+        
+        self.table.setItem(row_position, 0, email_item)
+        self.table.setItem(row_position, 1, status_item)
+
+class BulkVerificationThread(QtCore.QThread):
+    result_signal = QtCore.pyqtSignal(str, str)
+    all_done = QtCore.pyqtSignal()
+    
+    def __init__(self, emails):
+        super().__init__()
+        self.emails = emails
+        
+    def run(self):
+        for email in self.emails:
+            if not email:
+                continue
+                
+            try:
+                if not is_valid_email_syntax(email):
+                    status = "Invalid (Syntax)"
+                elif not has_mx_record(email.split('@')[1]):
+                    status = "Invalid (No MX)"
+                elif not verify_email_smtp(email):
+                    status = "Invalid (SMTP)"
+                else:
+                    status = "Valid"
+            except Exception as e:
+                status = f"Error: {str(e)}"
+                
+            self.result_signal.emit(email, status)
+        
+        self.all_done.emit()  # Signal completion after all emails
 
 class EmailValidatorApp(QtWidgets.QWidget):
     def __init__(self):
@@ -11,9 +73,10 @@ class EmailValidatorApp(QtWidgets.QWidget):
         self.verifying_timer = QtCore.QTimer()
         self.verifying_counter = 1
         self.verifying_timer.timeout.connect(self.update_verifying_text)
+        self.verification_thread = None
 
     def init_ui(self):
-        self.setWindowTitle("KnowEmail - Email Validator")
+        self.setWindowTitle("KnowEmail")
         self.setMinimumSize(600, 500)
 
         # Main layout
@@ -26,15 +89,16 @@ class EmailValidatorApp(QtWidgets.QWidget):
         title = QtWidgets.QLabel("KnowEmail")
         title.setObjectName("title")
         
-        subtitle = QtWidgets.QLabel("Ad-Free & Open Source")
+        subtitle = QtWidgets.QLabel("Ad-Free & Open Source Bulk Email Verifier")
         subtitle.setObjectName("subtitle")
         
         header_layout.addWidget(title, 0, QtCore.Qt.AlignHCenter)
         header_layout.addWidget(subtitle, 0, QtCore.Qt.AlignHCenter)
         main_layout.addLayout(header_layout)
 
+        # Description
         description = QtWidgets.QLabel(
-            "Tired of dealing with invalid email addresses? KnowEmail helps you "
+            "Tired of dealing with invalid email addresses? Free Email Verifier tool helps you "
             "clean your email lists by ensuring every address is valid before you send that "
             "important campaign."
         )
@@ -61,11 +125,17 @@ class EmailValidatorApp(QtWidgets.QWidget):
         self.result_label.setObjectName("resultLabel")
         main_layout.addWidget(self.result_label)
 
+        # Bulk Verify Button
+        self.bulk_button = QtWidgets.QPushButton("Check Multiple Emails")
+        self.bulk_button.setObjectName("bulkButton")
+        self.bulk_button.clicked.connect(self.bulk_verify)
+        main_layout.addWidget(self.bulk_button)
+
         # Support Section
         support_layout = QtWidgets.QVBoxLayout()
         support_label = QtWidgets.QLabel(
-            "We've made this tool free and open-source for everyone. If you'd like to support our "
-            "development efforts, consider donating."
+            "We've made this tool free and open-source for everyone."
+            "If you'd like to support our development efforts, consider donating."
         )
         support_label.setWordWrap(True)
         support_label.setObjectName("supportLabel")
@@ -77,9 +147,56 @@ class EmailValidatorApp(QtWidgets.QWidget):
         support_layout.addWidget(support_label, 0, QtCore.Qt.AlignHCenter)
         support_layout.addWidget(donate_button, 0, QtCore.Qt.AlignHCenter)
         main_layout.addLayout(support_layout)
+
+        # Add spacer to push support section to bottom
         main_layout.addStretch(1)
 
         self.setLayout(main_layout)
+
+    def bulk_verify(self):
+        file_dialog = QtWidgets.QFileDialog()
+        file_path, _ = file_dialog.getOpenFileName(
+            self,
+            "Select Email List",
+            "",
+            "Text Files (*.txt);;Excel Files (*.xlsx)"
+        )
+        
+        if not file_path:
+            return
+            
+        try:
+            if file_path.endswith('.txt'):
+                with open(file_path, 'r') as f:
+                    emails = [line.strip() for line in f.readlines() if line.strip()]
+            elif file_path.endswith('.xlsx'):
+                df = pd.read_excel(file_path)
+                emails = df.iloc[:, 0].astype(str).tolist()
+            else:
+                raise ValueError("Unsupported file format")
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(self, "Error", f"Failed to read file: {str(e)}")
+            return
+            
+        self.results_dialog = ResultDialog(self)
+        self.results_dialog.show()
+        
+        # Start verification in background
+        self.verification_thread = BulkVerificationThread(emails)
+        self.verification_thread.result_signal.connect(self.update_results)
+        self.verification_thread.all_done.connect(self.show_completion_popup)  # Add this
+        self.verification_thread.start()
+
+    def show_completion_popup(self):
+        QtWidgets.QMessageBox.information(
+            self,
+            "Process Complete",
+            "All emails from the file have been checked!",
+            QtWidgets.QMessageBox.Ok
+        )
+
+    def update_results(self, email, status):
+        self.results_dialog.add_row(email, status)
 
     def apply_styles(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))

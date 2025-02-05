@@ -83,7 +83,7 @@ QLineEdit {
 #supportLabel {
     color: #7f8c8d;
     font-size: 13px;
-    margin: 30px 0 15px 0;
+    margin: 10px 0 15px 0;
     text-align: center;
 }
 
@@ -138,4 +138,39 @@ QMessageBox QLabel#qt_msgboxex_icon_label {
 /* Force text color for all push buttons */
 QPushButton {
     color: white;
+}
+
+/* Bulk Verify Button */
+#bulkButton {
+    background-color: #9b59b6;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    min-width: 120px;
+    margin-top: 10px;
+}
+
+#bulkButton:hover {
+    background-color: #8e44ad;
+}
+
+/* Results Table */
+QTableWidget {
+    background-color: #ffffff;
+    border: 1px solid #bdc3c7;
+    alternate-background-color: #f8f9fa;
+}
+
+QHeaderView::section {
+    background-color: #3498db;
+    color: white;
+    padding: 8px;
+    border: none;
+}
+
+QTableWidget::item {
+    padding: 8px;
 }

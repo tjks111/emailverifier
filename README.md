@@ -20,7 +20,7 @@ Maintainer - [@Deadpool2000](https://github.com/Deadpool2000)
 
 
 <picture>
-  <img alt="knowemaill logo" src="src/knowemail.png" width="100%">
+  <img alt="knowemaill logo" src="src/knowemail.png" width="60%">
 </picture>
 </div>
 

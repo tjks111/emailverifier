@@ -6,6 +6,7 @@
 
 An Open Source Email Verifier &amp; Validator.
 <h3>
+
 By [OpenInitia](https://github.com/OpenInitia)
 </h3>
 

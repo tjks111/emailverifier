@@ -15,14 +15,14 @@ QLabel, QLineEdit, QPushButton, QMessageBox {
     font-size: 28px;
     font-weight: bold;
     color: #2c3e50;
-    margin-bottom: 5px;
+    margin-bottom: 3px;  /* Reduced margin-bottom */
 }
 
 /* Subtitle styling */
 #subtitle {
     font-size: 16px;
     color: #7f8c8d;
-    margin-bottom: 20px;
+    margin-bottom: 15px;  /* Reduced margin-bottom */
 }
 
 /* Description text styling */
@@ -30,16 +30,16 @@ QLabel, QLineEdit, QPushButton, QMessageBox {
     font-size: 14px;
     color: #34495e;
     line-height: 1.4;
-    margin-bottom: 30px;
+    margin-bottom: 20px;  /* Reduced margin-bottom */
 }
 
 /* Email input field styling */
 #emailInput {
-    padding: 12px;
+    padding: 8px;  /* Reduced padding */
     border: 2px solid #bdc3c7;
     border-radius: 6px;
     font-size: 14px;
-    min-width: 300px;
+    min-width: 280px;  /* Reduced min-width */
     color: #2c3e50;
     background-color: #f8f9fa;
 }
@@ -59,12 +59,12 @@ QLineEdit {
 #checkButton {
     background-color: #3498db;
     color: white;
-    padding: 12px 30px;
+    padding: 8px 20px;  /* Reduced padding */
     border: none;
     border-radius: 6px;
     font-size: 14px;
     font-weight: bold;
-    min-width: 120px;
+    min-width: 100px;  /* Reduced min-width */
 }
 
 #checkButton:hover {
@@ -75,7 +75,7 @@ QLineEdit {
 #resultLabel {
     color: #e74c3c;
     font-size: 14px;
-    margin-top: 10px;
+    margin-top: 8px;  /* Reduced margin-top */
     text-align: center;
 }
 
@@ -83,7 +83,7 @@ QLineEdit {
 #supportLabel {
     color: #7f8c8d;
     font-size: 13px;
-    margin: 10px 0 15px 0;
+    margin: 8px 0 10px 0;  /* Reduced margins */
     text-align: center;
 }
 
@@ -91,7 +91,7 @@ QLineEdit {
 #donateButton {
     background-color: #27ae60;
     color: white;
-    padding: 10px 25px;
+    padding: 8px 20px;  /* Reduced padding */
     border: none;
     border-radius: 5px;
     font-size: 13px;
@@ -116,11 +116,11 @@ QMessageBox QLabel {
 QMessageBox QPushButton {
     background-color: #3498db;
     color: white !important;
-    padding: 8px 20px;
+    padding: 6px 15px;  /* Reduced padding */
     border: none;
     border-radius: 4px;
     font-size: 13px;
-    min-width: 80px;
+    min-width: 70px;  /* Reduced min-width */
 }
 
 QMessageBox QPushButton:hover {
@@ -144,13 +144,13 @@ QPushButton {
 #bulkButton {
     background-color: #9b59b6;
     color: white;
-    padding: 12px 30px;
+    padding: 8px 20px;  /* Reduced padding */
     border: none;
     border-radius: 6px;
     font-size: 14px;
     font-weight: bold;
-    min-width: 120px;
-    margin-top: 10px;
+    min-width: 100px;  /* Reduced min-width */
+    margin-top: 8px;  /* Reduced margin-top */
 }
 
 #bulkButton:hover {
@@ -167,10 +167,11 @@ QTableWidget {
 QHeaderView::section {
     background-color: #3498db;
     color: white;
-    padding: 8px;
+    padding: 6px;  /* Reduced padding */
     border: none;
 }
 
 QTableWidget::item {
-    padding: 8px;
+    padding: 4px;  /* Reduced padding */
 }
+

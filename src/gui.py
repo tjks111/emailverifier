@@ -19,6 +19,12 @@ class ResultDialog(QtWidgets.QDialog):
         self.layout.addWidget(self.table)
         self.setLayout(self.layout)
 
+
+    # Enable the "?" help button
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowContextHelpButtonHint)
+
+        
+
     def add_row(self, email, status):
         row_position = self.table.rowCount()
         self.table.insertRow(row_position)
@@ -35,6 +41,53 @@ class ResultDialog(QtWidgets.QDialog):
         
         self.table.setItem(row_position, 0, email_item)
         self.table.setItem(row_position, 1, status_item)
+    
+    def showEvent(self, event):
+        """Override showEvent to ensure the help button is available."""
+        super().showEvent(event)
+        
+        # Find the help button after the dialog is shown
+        help_button = self.findChild(QtWidgets.QAbstractButton, "qt_help_button")
+        if help_button:
+            help_button.clicked.connect(self.show_status_help)
+
+    def show_status_help(self):
+        help_text = """
+        <b>Verification Status Explanations:</b><br><br>
+        
+        <span style='color:#27ae60; font-weight:bold'>Valid</span>: 
+        - Email address is valid and reachable<br>
+        - Domain has proper MX records<br>
+        - SMTP server confirmed the mailbox exists<br><br>
+        
+        <span style='color:#e74c3c; font-weight:bold'>Invalid (Syntax)</span>: 
+        - Email format is incorrect<br>
+        - Missing @ symbol or invalid domain structure<br>
+        - Example: <i>user@domain</i> (missing .com)<br><br>
+        
+        <span style='color:#e74c3c; font-weight:bold'>Invalid (No MX)</span>: 
+        - Domain does not have mail exchange records<br>
+        - Domain might not exist or is not configured for email<br>
+        - Example: <i>user@nonexistentdomain.xyz</i><br><br>
+        
+        <span style='color:#e74c3c; font-weight:bold'>Invalid (SMTP)</span>: 
+        - Domain exists, but the mailbox does not<br>
+        - SMTP server rejected the recipient address<br>
+        - Example: <i>nonexistentuser@gmail.com</i><br><br>
+        
+        <span style='color:#f1c40f; font-weight:bold'>Error</span>: 
+        - Temporary network issues<br>
+        - SMTP server timeout or connection error<br>
+        - Unexpected verification errors<br><br>
+        
+        <i>Note: Some email servers may block verification attempts for privacy reasons.</i>
+        """
+        help_dialog = QtWidgets.QMessageBox(self)
+        help_dialog.setWindowTitle("Verification Status Help")
+        help_dialog.setTextFormat(QtCore.Qt.RichText)  # Enable HTML formatting
+        help_dialog.setText(help_text)
+        help_dialog.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        help_dialog.exec_()
 
 class BulkVerificationThread(QtCore.QThread):
     result_signal = QtCore.pyqtSignal(str, str)
@@ -62,7 +115,6 @@ class BulkVerificationThread(QtCore.QThread):
                 status = f"Error: {str(e)}"
                 
             self.result_signal.emit(email, status)
-        
         self.all_done.emit()  # Signal completion after all emails
 
 class EmailValidatorApp(QtWidgets.QWidget):
@@ -82,7 +134,7 @@ class EmailValidatorApp(QtWidgets.QWidget):
         # Main layout
         main_layout = QtWidgets.QVBoxLayout()
         main_layout.setContentsMargins(40, 30, 40, 30)
-        main_layout.setSpacing(20)
+        main_layout.setSpacing(15)
 
         # Header Section
         header_layout = QtWidgets.QVBoxLayout()
@@ -96,9 +148,8 @@ class EmailValidatorApp(QtWidgets.QWidget):
         header_layout.addWidget(subtitle, 0, QtCore.Qt.AlignHCenter)
         main_layout.addLayout(header_layout)
 
-        # Description
         description = QtWidgets.QLabel(
-            "Tired of dealing with invalid email addresses? Free Email Verifier tool helps you "
+            "Tired of dealing with invalid email addresses? KnowEmail helps you "
             "clean your email lists by ensuring every address is valid before you send that "
             "important campaign."
         )
@@ -159,7 +210,7 @@ class EmailValidatorApp(QtWidgets.QWidget):
             self,
             "Select Email List",
             "",
-            "Text Files (*.txt);;Excel Files (*.xlsx)"
+            "Text File (*.txt);; Excel File (*.xlsx)"
         )
         
         if not file_path:

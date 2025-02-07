@@ -1,5 +1,4 @@
 import sys
-from PyQt5 import QtWidgets
 from src.gui import EmailValidatorApp
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import *

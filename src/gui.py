@@ -8,7 +8,7 @@ class ResultDialog(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("KnowEmail - Verifying Bulk Emails")
-        self.setMinimumSize(600, 400)deac
+        self.setMinimumSize(600, 400)
         self.layout = QtWidgets.QVBoxLayout()
         self.table = QtWidgets.QTableWidget()
         self.table.setColumnCount(2)

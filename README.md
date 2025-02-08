@@ -73,8 +73,19 @@ You can run KnowEmail either from the command line or integrate it directly into
 python3 main.py
 ```
 
+### You can check
+1) Single Email
+2) Bulk Emails (By using .txt or .xlsx file)
+
 
 *Tip:* Customize the script or integrate additional checks as needed for your specific application.
+
+## Download Options
+### Windows Users:
+The current release of KnowEmail is available as an executable (.exe) for Windows users only. Download the latest Windows executable from the Releases page. [Download Here](https://github.com/OpenInitia/KnowEmail/releases)
+
+### Future Support:
+We are actively working on packages for macOS, Linux, and Android. Stay tuned for updates!
 
 ## Contributing
 

@@ -15,6 +15,7 @@ def is_valid_email_syntax(email):
 def has_mx_record(domain):
     try:
         resolver = dns.resolver.Resolver()
+        resolver.nameservers = ['8.8.8.8', '1.1.1.1']
         resolver.lifetime = 10.0
         mx_records = resolver.resolve(domain, 'MX')
         return bool(mx_records)

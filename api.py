@@ -3,6 +3,10 @@ from lib.validators import is_valid_email_syntax, has_mx_record, verify_email_sm
 
 app = Flask(__name__)
 
+@app.route('/')
+def health_check():
+    return "OK", 200
+
 @app.route('/validate_email', methods=['POST'])
 def validate_email_endpoint():
     data = request.get_json()
